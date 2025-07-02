@@ -3,7 +3,7 @@ import {
     modeLab,
     modeLch,
     differenceEuclidean
-} from 'culori/fn';
+} from 'https://cdn.jsdelivr.net/npm/culori/fn/index.js';
 
 // Register the necessary color modes
 const lab = useMode(modeLab);
