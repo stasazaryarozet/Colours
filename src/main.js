@@ -9,7 +9,7 @@ import {
     modeHsl, // used by formatHex
     modeLab,
     modeLch
-} from 'culori/fn';
+} from 'https://cdn.jsdelivr.net/npm/culori/fn/index.js';
 
 // Since we are using the tree-shakeable 'culori/fn',
 // we have to register all the color spaces we need.
