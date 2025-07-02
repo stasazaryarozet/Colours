@@ -27,6 +27,17 @@
         <input type="number" id="b" name="b" value="31.443" step="0.001">
     </div>
     <div id="palette"></div>
-    <script type="module" src="src/main.js"></script>
+    <div id="error-container" style="color: red; margin-top: 1rem; white-space: pre-wrap; font-family: monospace;"></div>
+    <script>
+      (async () => {
+        try {
+          await import('./src/main.js');
+        } catch (error) {
+          const errorContainer = document.getElementById('error-container');
+          errorContainer.textContent = 'A critical error occurred: \n' + error.stack;
+          console.error(error);
+        }
+      })();
+    </script>
 </body>
 </html> 
