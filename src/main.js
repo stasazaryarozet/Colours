@@ -1,22 +1,61 @@
-import { generate_shades } from './colors.js';
 import {
+    useMode,
+    modeLab,
+    modeLch,
+    differenceEuclidean,
     formatHex,
     clampRgb,
-    // The functions below are needed because we use culori/fn
-    // which requires manual registration of color spaces.
-    useMode,
     modeRgb,
-    modeHsl, // used by formatHex
-    modeLab,
-    modeLch
+    modeHsl,
 } from 'https://cdn.jsdelivr.net/npm/culori/fn/index.js';
 
-// Since we are using the tree-shakeable 'culori/fn',
-// we have to register all the color spaces we need.
+// Register all necessary color modes at the top level
 useMode(modeRgb);
 useMode(modeHsl);
 useMode(modeLab);
 useMode(modeLch);
+
+// --- Copied from colors.js ---
+function generate_shades(base_lab) {
+  if (!base_lab) return [];
+  const lch = useMode(modeLch); // Get converter inside function scope
+  const lab = useMode(modeLab);   // Get converter inside function scope
+
+  const base_lch = lch(base_lab);
+  const hue = base_lch.h || 0;
+
+  const shades = [];
+  const num_shades = 10;
+  const l_start = 10, l_end = 90;
+  const c_start = 80, c_end = 5;
+
+  const l_step = (l_end - l_start) / (num_shades - 1);
+  const c_step = (c_end - c_start) / (num_shades - 1);
+
+  for (let i = 0; i < num_shades; i++) {
+    const new_l = l_start + i * l_step;
+    const new_c = c_start + i * c_step;
+    const new_lch = { mode: 'lch', l: new_l, c: new_c, h: hue };
+    shades.push(lab(new_lch));
+  }
+  
+  let closest_index = 0;
+  let min_dist = Infinity;
+  const distance = differenceEuclidean('lab');
+
+  shades.forEach((shade, index) => {
+    const dist = distance(base_lab, shade);
+    if (dist < min_dist) {
+      min_dist = dist;
+      closest_index = index;
+    }
+  });
+  
+  shades[closest_index] = base_lab;
+
+  return shades;
+}
+// --- End of copied code ---
 
 
 const l_input = document.getElementById('l');
@@ -35,7 +74,7 @@ function render_palette() {
     };
     
     if (isNaN(base_color_lab.l) || isNaN(base_color_lab.a) || isNaN(base_color_lab.b)) {
-        return; // Do nothing if inputs are invalid
+        return;
     }
 
     const shades = generate_shades(base_color_lab);
