@@ -27,9 +27,7 @@
         <input type="number" id="b" name="b" value="31.443" step="0.001">
     </div>
     <div id="palette"></div>
-    <div id="error-container" style="color: red; margin-top: 1rem; white-space: pre-wrap; font-family: monospace;"></div>
     <script type="module">
-      try {
         const {
             useMode,
             modeLab,
@@ -129,9 +127,6 @@
         [l_input, a_input, b_input].forEach(input => {
             input.addEventListener('input', render_palette);
         });
-      } catch (e) {
-        document.getElementById('error-container').textContent = e.stack;
-      }
     </script>
 </body>
 </html> 
